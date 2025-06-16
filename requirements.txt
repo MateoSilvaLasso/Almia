@@ -14,3 +14,4 @@ python-multipart
 selenium
 BeautifulSoup4
 llama-index-llms-groq
+llama_index_llms_gemini
