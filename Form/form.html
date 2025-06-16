@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimización de LinkedIn por IA - Almia</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      animation: slideInUp 1s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero .subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      animation: slideInUp 1s ease-out 0.2s both;
+    }
+
+    .hero .description {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      opacity: 0.85;
+      animation: slideInUp 1s ease-out 0.4s both;
+    }
+
+    .linkedin-logo {
+      display: inline-block;
+      background: #0077b5;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 0 4px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Main Form Section */
+    .form-section {
+      background: white;
+      padding: 80px 0;
+      position: relative;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 60px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      position: relative;
+      transform: translateY(-40px);
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+      border-radius: 22px;
+      z-index: -1;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      color: #2d3748;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 50px;
+    }
+
+    /* Form Steps */
+    .form-step {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: #f8fafc;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .form-step:hover {
+      transform: translateX(5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      margin-right: 15px;
+      font-size: 1.1rem;
+    }
+
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 15px;
+    }
+
+    .step-description {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+    }
+
+    /* Form Elements */
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-size: 1.1rem;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .file-upload-area {
+      border: 2px dashed #cbd5e0;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: #f7fafc;
+      cursor: pointer;
+    }
+
+    .file-upload-area:hover {
+      border-color: #667eea;
+      background: #edf2f7;
+    }
+
+    .file-upload-area.dragover {
+      border-color: #667eea;
+      background: #e6fffa;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: #a0aec0;
+      margin-bottom: 15px;
+    }
+
+    .upload-text {
+      color: #4a5568;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .upload-hint {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    /* No tengo option */
+    .no-file-option {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .no-file-btn {
+      background: none;
+      border: 2px solid #e2e8f0;
+      color: #666;
+      padding: 10px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .no-file-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 18px 50px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      display: block;
+      margin: 50px auto 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Output Section */
+    #output {
+      margin-top: 50px;
+      padding: 0;
+    }
+
+    .analysis-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+      animation: slideInUp 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .analysis-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #48bb78);
+      background-size: 200% 100%;
+      animation: gradientMove 3s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .analysis-card h4 {
+      color: #2d3748;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .analysis-card h4::before {
+      content: '✨';
+      margin-right: 15px;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 10px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Structured Analysis Content */
+    .analysis-content {
+      line-height: 1.8;
+    }
+
+    .intro-text {
+      background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+      padding: 25px;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+      font-size: 1.1rem;
+      color: #4a5568;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .intro-text::before {
+      content: '👋';
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+    }
+
+    .recommendations-section {
+      margin: 30px 0;
+    }
+
+    .section-title {
+      color: #2d3748;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .recommendations-list {
+      margin: 0;
+      padding: 0;
+      counter-reset: recommendation-counter;
+    }
+
+    .recommendation-item {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      margin-bottom: 20px;
+      padding: 25px;
+      border-radius: 15px;
+      border: 1px solid #e2e8f0;
+      list-style: none;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      font-size: 1.05rem;
+      color: #4a5568;
+      line-height: 1.7;
+    }
+
+    .recommendation-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+      border-color: #667eea;
+    }
+
+    .recommendation-item::before {
+      content: counter(recommendation-counter);
+      counter-increment: recommendation-counter;
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .recommendation-item strong {
+      color: #2d3748;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Summary Section */
+    .analysis-summary {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6fffa 100%);
+      padding: 30px;
+      border-radius: 20px;
+      margin-top: 40px;
+      border: 1px solid #bee3f8;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .analysis-summary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #48bb78, #38b2ac, #4299e1);
+    }
+
+    .analysis-summary h5 {
+      color: #2d3748;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .analysis-summary p {
+      color: #4a5568;
+      font-size: 1.1rem;
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .loading-text {
+      text-align: center;
+      color: #667eea;
+      font-style: italic;
+      font-size: 1.2rem;
+      padding: 40px;
+      background: #f0f4ff;
+      border-radius: 15px;
+      border: 2px dashed #667eea;
+    }
+
+    .loading-text::before {
+      content: '🔄';
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .form-container {
+        padding: 30px 20px;
+        margin: 0 20px;
+      }
+      
+      .hero {
+        padding: 60px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>¡Hola, Bienvenido/a! 👋</h1>
+        <p class="subtitle">Servicio de <strong>Optimización de <span class="linkedin-logo">LinkedIn</span> por IA</strong> de Almia</p>
+        <p class="description">
+          Vamos a crear juntos una hoja de vida digital poderosa, diseñada especialmente para LinkedIn. 
+          El entregable será un <strong>PDF personalizado</strong> que puedes subir a LinkedIn en pocos minutos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section">
+    <div class="container">
+      <div class="form-container">
+        <h2 class="section-title">Comencemos tu Transformación</h2>
+        <p class="section-subtitle">Solo necesitamos algunos datos para crear tu perfil optimizado</p>
+        
+        <form id="perfilForm" enctype="multipart/form-data">
+          <!-- Step 1: Name -->
+          <div class="form-step">
+            <div class="step-title">
+              <span class="step-number">1</span>
+              ¿Cuál es tu nombre completo?
+            </div>
+            <p class="step-description">Este será el nombre que aparecerá en tu perfil optimizado de LinkedIn.</p>
+            <label for="name">Nombre Completo:</label>
+            <input type="text" id="name" name="name" placeholder="Ej: María González Pérez" required>
+          </div>
+
+          <!-- Step 2: LinkedIn -->
+          <div class="form-step">
+            <div class="step-title">
+              <span class="step-number">2</span>
+              ¿Tienes un perfil de LinkedIn actual?
+            </div>
+            <p class="step-description">Si ya tienes LinkedIn, comparte tu URL para que podamos analizarlo y mejorarlo.</p>
+            <label for="linkedin">URL de LinkedIn:</label>
+            <input type="text" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/tu-perfil" required>
+          </div>
+
+          <!-- Step 3: CV -->
+          <div class="form-step">
+            <div class="step-title">
+              <span class="step-number">3</span>
+              ¿Tienes una hoja de vida actualizada?
+            </div>
+            <p class="step-description">Sube tu archivo PDF o responde "No tengo" si necesitas ayuda para crearla.</p>
+            <label for="hv">Hoja de Vida (PDF):</label>
+            <div class="file-upload-area" onclick="document.getElementById('hv').click()">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">Haz clic para subir tu hoja de vida</div>
+              <div class="upload-hint">Formato PDF, máximo 10MB</div>
+            </div>
+            <input type="file" id="hv" name="hv" accept=".pdf" style="display: none;" required>
+            
+            <div class="no-file-option">
+              <button type="button" class="no-file-btn" onclick="handleNoCV()">No tengo hoja de vida actualizada</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Photo -->
+          <div class="form-step">
+            <div class="step-title">
+              <span class="step-number">4</span>
+              ¿Tienes una foto profesional?
+            </div>
+            <p class="step-description">Una buena foto de perfil puede aumentar las visitas a tu LinkedIn hasta un 200%.</p>
+            <label for="imagen">Imagen de Perfil:</label>
+            <div class="file-upload-area" onclick="document.getElementById('imagen').click()">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Haz clic para subir tu foto</div>
+              <div class="upload-hint">Formatos: JPG, PNG, máximo 5MB</div>
+            </div>
+            <input type="file" id="imagen" name="imagen" accept="image/*" style="display: none;" required>
+          </div>
+
+          <button type="submit" class="submit-btn">✨ Crear Mi Perfil Optimizado</button>
+        </form>
+
+        <div id="output"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+  <script>
+    const form = document.getElementById('perfilForm');
+    const output = document.getElementById('output');
+
+    // Handle file upload visual feedback
+    document.getElementById('hv').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        const uploadArea = e.target.previousElementSibling;
+        uploadArea.querySelector('.upload-text').textContent = `Archivo seleccionado: ${fileName}`;
+        uploadArea.style.borderColor = '#48bb78';
+        uploadArea.style.background = '#f0fff4';
+      }
+    });
+
+    document.getElementById('imagen').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        const uploadArea = e.target.previousElementSibling;
+        uploadArea.querySelector('.upload-text').textContent = `Imagen seleccionada: ${fileName}`;
+        uploadArea.style.borderColor = '#48bb78';
+        uploadArea.style.background = '#f0fff4';
+      }
+    });
+
+    // Handle "No tengo CV" button
+    function handleNoCV() {
+      alert('¡No te preocupes! Nuestro sistema creará una estructura base para tu hoja de vida usando la información de tu LinkedIn.');
+      document.getElementById('hv').removeAttribute('required');
+      const uploadArea = document.querySelector('.file-upload-area');
+      uploadArea.querySelector('.upload-text').textContent = 'Crearemos tu CV desde cero';
+      uploadArea.style.borderColor = '#667eea';
+      uploadArea.style.background = '#f0f4ff';
+    }
+
+    /**
+     * Función para crear una estructura hermosa del análisis
+     */
+    function createAnalysisStructure(text) {
+        console.log('Texto original:', text);
+        
+        // El texto viene todo junto, necesitamos dividirlo inteligentemente
+        let cleanText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Dividir por oraciones que terminan con punto y buscar patrones
+        let sentences = cleanText.split(/\.\s+/).filter(s => s.trim().length > 0);
+        
+        let intro = '';
+        let recommendations = [];
+        let summary = '';
+        let currentRecommendation = '';
+        
+        let mode = 'intro';
+        
+        sentences.forEach((sentence, index) => {
+            sentence = sentence.trim();
+            if (!sentence) return;
+            
+            // Si termina sin punto, lo agregamos
+            if (!sentence.endsWith('.')) {
+            sentence += '.';
+            }
+            
+            // Detectar inicio de recomendaciones
+            if (sentence.match(/\d+\.\s*/) || 
+                sentence.includes('mejorar') || 
+                sentence.includes('agregar') || 
+                sentence.includes('incluir') ||
+                sentence.includes('considerar')) {
+            
+            if (mode === 'intro' && intro.trim()) {
+                mode = 'recommendations';
+            }
+            
+            if (mode === 'recommendations') {
+                if (currentRecommendation.trim()) {
+                recommendations.push(currentRecommendation.trim());
+                }
+                currentRecommendation = sentence;
+            }
+            } 
+            // Detectar resumen final
+            else if (sentence.toLowerCase().includes('en general') || 
+                    sentence.toLowerCase().includes('general,') ||
+                    sentence.toLowerCase().includes('resumen') ||
+                    (index > sentences.length - 3 && mode === 'recommendations')) {
+            
+            if (currentRecommendation.trim()) {
+                recommendations.push(currentRecommendation.trim());
+                currentRecommendation = '';
+            }
+            mode = 'summary';
+            summary += sentence + ' ';
+            }
+            // Continuar la recomendación actual
+            else if (mode === 'recommendations' && currentRecommendation) {
+            currentRecommendation += ' ' + sentence;
+            }
+            // Continuar la introducción
+            else if (mode === 'intro') {
+            intro += sentence + ' ';
+            }
+            // Continuar el resumen
+            else if (mode === 'summary') {
+            summary += sentence + ' ';
+            }
+        });
+        
+        // Agregar la última recomendación si existe
+        if (currentRecommendation.trim()) {
+            recommendations.push(currentRecommendation.trim());
+        }
+        
+        // Si no hay recomendaciones separadas, dividir el texto largo en párrafos
+        if (recommendations.length === 0) {
+            const longParagraphs = cleanText.split(/(?:\d+\.\s*<strong>.*?<\/strong>:?\s*)/);
+            const recommendationMatches = cleanText.match(/\d+\.\s*<strong>.*?<\/strong>:?\s*[^0-9]*/g);
+            
+            if (recommendationMatches && recommendationMatches.length > 0) {
+            intro = longParagraphs[0] || '';
+            recommendations = recommendationMatches.map(rec => rec.trim());
+            } else {
+            // Dividir por párrafos largos
+            const parts = cleanText.split(/\.\s+(?=[A-Z])/);
+            intro = parts.slice(0, 2).join('. ') + '.';
+            recommendations = parts.slice(2).map(part => part.trim() + (part.endsWith('.') ? '' : '.'));
+            }
+        }
+        
+        console.log('Procesado - Intro:', intro);
+        console.log('Procesado - Recommendations:', recommendations);
+        console.log('Procesado - Summary:', summary);
+        
+        // Construir HTML estructurado
+        let structuredHTML = '<div class="analysis-content">';
+        
+        if (intro.trim()) {
+            structuredHTML += `<p class="intro-text">${intro.trim()}</p>`;
+        }
+        
+        if (recommendations.length > 0) {
+            structuredHTML += '<div class="recommendations-section">';
+            structuredHTML += '<h5 class="section-title">💡 Recomendaciones para Mejorar</h5>';
+            structuredHTML += '<ul class="recommendations-list">';
+            
+            recommendations.forEach((rec, index) => {
+            let cleanRec = rec.replace(/^\d+\.\s*/, '').trim();
+            if (cleanRec) {
+                structuredHTML += `<li class="recommendation-item">${cleanRec}</li>`;
+            }
+            });
+            
+            structuredHTML += '</ul>';
+            structuredHTML += '</div>';
+        }
+        
+        if (summary.trim()) {
+            structuredHTML += `
+            <div class="analysis-summary">
+                <h5>📋 Resumen General</h5>
+                <p>${summary.trim()}</p>
+            </div>
+            `;
+        }
+        
+        structuredHTML += '</div>';
+        return structuredHTML;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      output.innerHTML = '<p class="loading-text">Analizando tu perfil con IA, esto tomará unos momentos...</p>';
+      output.scrollIntoView({ behavior: 'smooth' });
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('http://localhost:8080/analizar-perfil/', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+        }
+
+        const outerResult = await response.json();
+        const analysisData = outerResult.resultado;
+
+        console.log('Respuesta completa del servidor:', outerResult.resultado); 
+
+        const analysisText = analysisData.texto;
+        const analysisImage = analysisData.imagen;
+
+        const formattedHTML = `
+          <div class="analysis-card">
+            <h4>Análisis de tu Perfil Profesional</h4>
+            ${createAnalysisStructure(analysisText)}
+          </div>
+          <div class="analysis-card">
+            <h4>Análisis de tu Imagen de Perfil</h4>
+            ${createAnalysisStructure(analysisImage)}
+          </div>
+        `;
+        
+        output.innerHTML = formattedHTML;
+
+        //generatePDF(analysisText, formData.get('imagen'), analysisImage, );
+
+      } catch (error) {
+        output.innerHTML = `
+          <div class="analysis-card" style="border-left-color: #e53e3e;">
+            <h4 style="color: #e53e3e;">❌ Oops, algo salió mal</h4>
+            <p><strong>Error al procesar tu solicitud:</strong></p>
+            <p>${error.message}</p>
+            <p style="margin-top: 20px; color: #666;">Por favor, verifica tu conexión e inténtalo nuevamente.</p>
+          </div>
+        `;
+      }
+    });
+
+    function generatePDF(analysisText, analysisImage, fileInput) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+        const imgData = event.target.result;
+        const doc = new jsPDF();
+
+        // Agregar análisis del perfil
+        doc.text("Análisis de tu Perfil Profesional", 10, 10);
+        doc.text(analysisText, 10, 20);
+
+        // Agregar foto del usuario
+        doc.addImage(imgData, 'JPEG', 10, 60, 180, 160);
+
+        // Agregar análisis de la foto
+        doc.text("Análisis de tu Imagen de Perfil", 10, 230);
+        doc.text(analysisImage, 10, 240);
+
+        // Guardar PDF
+        doc.save('analisis_perfil.pdf');
+        };
+        reader.readAsDataURL(fileInput);
+    }
+
+    // Add drag and drop functionality
+    const fileAreas = document.querySelectorAll('.file-upload-area');
+    fileAreas.forEach(area => {
+      area.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        area.classList.add('dragover');
+      });
+
+      area.addEventListener('dragleave', () => {
+        area.classList.remove('dragover');
+      });
+
+      area.addEventListener('drop', (e) => {
+        e.preventDefault();
+        area.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          const input = area.nextElementSibling;
+          input.files = files;
+          
+          const event = new Event('change', { bubbles: true });
+          input.dispatchEvent(event);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

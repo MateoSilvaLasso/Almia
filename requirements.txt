@@ -1,0 +1,16 @@
+langgraph 
+langchain
+llama-index
+llama-index-vector-stores-chroma
+serpapi
+llama_index_llms_google_genai
+llama_index_embeddings_google_genai
+googlemaps
+google-search-results
+tavily-python
+llama-index-readers-file
+cloudinary
+python-multipart
+selenium
+BeautifulSoup4
+llama-index-llms-groq
